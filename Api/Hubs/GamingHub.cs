@@ -1,5 +1,6 @@
 ﻿using MagicOnion.Server.Hubs;
-using Shared;
+using Shared.Data;
+using Shared.Hubs.Receiver;
 using System.Numerics;
 
 namespace Api.Hubs

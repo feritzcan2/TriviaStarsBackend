@@ -1,10 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Api.Hubs;
 using Grpc.Net.Client;
 using MagicOnion;
 using MagicOnion.Client;
-using Shared;
+using Shared.Data;
+using Shared.Hubs.Receiver;
 
 Console.WriteLine("Hello, World!");
 
