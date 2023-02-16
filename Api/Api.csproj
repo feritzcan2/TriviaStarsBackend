@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>fa589da0-fc92-458b-bf39-2fed45472ebc</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MagicOnion" Version="5.1.2" />
+    <PackageReference Include="MagicOnion.Abstractions" Version="5.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TriviaStarsClient\Assets\0_TriviaStars\Scripts\Shared\GameEngine.Entities\GameEngine.Entities.csproj" />
+    <ProjectReference Include="..\Api.Service.Game\Api.Service.GameHub.csproj" />
+    <ProjectReference Include="..\Api.Service.Repository\Api.Service.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,6 @@
+using Api.MagicOnion;
 using Api.Service.GameHub.Utils;
 using Api.ServiceExtensions;
-using MessagePack;
 using MessagePack.Resolvers;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -10,13 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenLocalhost(12345, o => o.Protocols =
-        HttpProtocols.Http2);
+
     serverOptions.ListenAnyIP(12345, o => o.Protocols =
         HttpProtocols.Http2);
 
-    serverOptions.ListenAnyIP(5001, o => o.Protocols =
-        HttpProtocols.Http1AndHttp2);
+    serverOptions.ListenAnyIP(3000, o => o.Protocols =
+        HttpProtocols.Http1);
+    serverOptions.ListenAnyIP(5000, o => o.Protocols =
+        HttpProtocols.Http1);
 });
 
 builder.Services.AddControllers();
@@ -30,12 +31,11 @@ StaticCompositeResolver.Instance.Register(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddGrpc();       // Add this line(Grpc.AspNetCore)
-builder.Services.AddMagicOnion(options =>
+builder.Services.AddMagicOnion((options) =>
 {
 
     options.EnableCurrentContext = true;
-    options.SerializerOptions = ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4BlockArray);
-
+    options.MessageSerializer = new MagicOnionMsgPckSerializerProvider();
 });
 
 
@@ -48,6 +48,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("/", () => "Running... Environment : " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 #if RELEASE
     app.UseHttpsRedirection();
@@ -60,5 +61,6 @@ app.MapControllers();
 app.MapMagicOnionService(); // Add this line
 
 app.Run();
+
 
 

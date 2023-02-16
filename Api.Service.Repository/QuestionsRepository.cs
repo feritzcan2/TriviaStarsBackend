@@ -6,6 +6,8 @@ namespace Api.Service.Repository
 {
     public class QuestionsRepository : IQuestionRepository
     {
+        private List<OpenTriviaDbQuestion> _questions;
+
         public enum QuestionCatagory
         {
             Music = 12,
@@ -42,6 +44,9 @@ namespace Api.Service.Repository
         {
             var questions = new List<OpenTriviaDbQuestion>();
 
+            if (_questions != null) return _questions;
+#if DEBUG
+
             var questionsFilePath = $"{System.IO.Directory.GetCurrentDirectory()}\\Questions.txt";
             if (File.Exists(questionsFilePath))
             {
@@ -49,6 +54,8 @@ namespace Api.Service.Repository
                 questions = JsonSerializer.Deserialize<List<OpenTriviaDbQuestion>>(text);
                 return questions;
             }
+#endif
+
             var client = new HttpClient();
             foreach (QuestionCatagory catagory in (QuestionCatagory[])Enum.GetValues(typeof(QuestionCatagory)))
             {
@@ -73,7 +80,11 @@ namespace Api.Service.Repository
                     : (quest.difficulty == "medium" ? Random.Shared.Next(4, 6) : Random.Shared.Next(1, 3));
             }
 
+#if DEBUG
             File.WriteAllText(questionsFilePath, JsonSerializer.Serialize(questions));
+
+#endif
+            _questions = questions;
             return questions;
         }
     }

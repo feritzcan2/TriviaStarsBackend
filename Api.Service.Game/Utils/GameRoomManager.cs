@@ -15,12 +15,12 @@ namespace Api.Service.GameHub.Utils
         }
 
         public async Task<(GameRoom room, GamePlayer player)> EnterRoom(string roomId, string username,
-            Guid connectionId)
+            Guid connectionId, bool singlePlayer)
         {
             GameRooms.TryGetValue(roomId, out var room);
             if (room == null)
             {
-                room = new GameRoom();
+                room = new GameRoom(singlePlayer);
                 GameRooms.Add(roomId, room);
             }
 

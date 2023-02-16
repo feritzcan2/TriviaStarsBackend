@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TriviaStarsClient\Assets\0_TriviaStars\Scripts\Shared\GameEngine.Entities\GameEngine.Entities.csproj" />
+    <ProjectReference Include="..\Api.Service.Game\Api.Service.GameHub.csproj" />
+  </ItemGroup>
+
+</Project>

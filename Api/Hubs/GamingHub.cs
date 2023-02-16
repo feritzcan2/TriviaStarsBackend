@@ -9,6 +9,7 @@ using MagicOnion.Server.Hubs;
 
 namespace Api.Hubs
 {
+
     public class GamingHub : StreamingHubBase<IGamingHub, IGamingHubReceiver>, IGamingHub
     {
         // this class is instantiated per connected so fields are cache area of connection.
@@ -36,15 +37,24 @@ namespace Api.Hubs
             return base.OnDisconnected();
         }
 
-        public async Task JoinAsync(string roomName, string userName)
+        public async ValueTask JoinAsync(string roomName, string userName, bool singlePlayer)
         {
-            (gameRoom, player) = await _roomManager.EnterRoom(roomName, userName, ConnectionId);
-            (room, storage) = await Group.AddAsync(roomName, player);
-
-            if (gameRoom.Players.Count == 2)
+            try
             {
-                await StartGame();
+                Console.WriteLine("Join asynccc");
+                (gameRoom, player) = await _roomManager.EnterRoom(roomName, userName, ConnectionId, singlePlayer);
+                (room, storage) = await Group.AddAsync(roomName, player);
+
+                if (gameRoom.Players.Count == 2 || (gameRoom.Players.Count == 1 && singlePlayer))
+                {
+                    await StartGame();
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in join " + e.ToString());
+            }
+
             //  return storage.AllValues.ToArray();
         }
 
@@ -57,11 +67,12 @@ namespace Api.Hubs
                 var deckDto = await _deckManager.ToDeckDto(currPlayer.Deck);
                 rresp.Deck = deckDto;
                 rresp.Energy = 7;
+                Console.WriteLine("Will start game ");
                 BroadcastTo(room, currPlayer.ConnectionId).OnGameStart(rresp);
             }
         }
 
-        public async Task<OpenQuestionResponse> OpenCard(string id)
+        public async ValueTask<OpenQuestionResponse> OpenCard(string id)
         {
             var playerCard = player.Deck.Cards.FirstOrDefault(x => x.Id == id);
             if (playerCard == null) return null;
@@ -78,11 +89,11 @@ namespace Api.Hubs
             };
         }
 
-        public async Task EndTurn()
+        public async ValueTask EndTurn()
         {
 
             gameRoom.Round.PlayedPlayerGuids.Add(ConnectionId);
-            if (gameRoom.Round.PlayedPlayerGuids.Count == 2)
+            if (gameRoom.Round.PlayedPlayerGuids.Count == 2 || gameRoom.SinglePlayer)
             {
                 await NextTurn();
             }
@@ -101,7 +112,7 @@ namespace Api.Hubs
             }
         }
 
-        public async Task<QuestionAnsweredResponse> AnswerQuestion(string cardId, string answer, int lane)
+        public async ValueTask<QuestionAnsweredResponse> AnswerQuestion(string cardId, string answer, int lane)
         {
             var response = new QuestionAnsweredResponse();
             Console.WriteLine("PlayerId " + player.ConnectionId.ToString());
@@ -118,7 +129,7 @@ namespace Api.Hubs
             return response;
         }
 
-        public async Task LeaveAsync()
+        public async ValueTask LeaveAsync()
         {
         }
 

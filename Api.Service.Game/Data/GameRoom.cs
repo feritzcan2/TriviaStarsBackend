@@ -6,6 +6,13 @@ namespace Api.Service.GameHub.Data
     {
         public GameRoundInfo Round = new GameRoundInfo();
 
+        public GameRoom(bool singlePlayer)
+        {
+            SinglePlayer = singlePlayer;
+        }
+
+        public bool SinglePlayer { get; set; }
+
         public IList<GamePlayer> Players { get; set; } = new List<GamePlayer>();
 
 
