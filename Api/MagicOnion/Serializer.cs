@@ -17,7 +17,7 @@ namespace Api.MagicOnion
     }
     public class MagicOnionMessagePackSerializer : IMagicOnionSerializer
     {
-        MessagePackSerializerOptions options = ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4BlockArray);
+        MessagePackSerializerOptions options = StandardResolver.Options;
         public void Serialize<T>(IBufferWriter<byte> writer, in T value)
         {
 

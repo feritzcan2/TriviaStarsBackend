@@ -1,5 +1,5 @@
 ﻿using _0_TriviaStars.Scripts.Shared.GameEngine.Entities.Data.Response;
-using Api.Service.GameHub.Data;
+using Api.Service.GameHub.Data.Game;
 using Api.Service.GameHub.Data.Player;
 using Api.Service.GameHub.DeckManagement;
 using Api.Service.GameHub.Utils;
@@ -60,6 +60,7 @@ namespace Api.Hubs
 
         private async Task StartGame()
         {
+
             var rresp = new StartGameResponse();
             gameRoom.Round.SetNewRound();
             foreach (var currPlayer in gameRoom.Players)
@@ -74,29 +75,43 @@ namespace Api.Hubs
 
         public async ValueTask<OpenQuestionResponse> OpenCard(string id)
         {
+            var roundPlayData = gameRoom.Round.RoundPlayData[player.UserId];
+            if (roundPlayData.TurnEnded) return null;
+
             var playerCard = player.Deck.Cards.FirstOrDefault(x => x.Id == id);
             if (playerCard == null) return null;
             var question = await _questionManager.GetQuestion(playerCard.QuestionId);
-            if (player.Energy < question.Energy) return null;
-
-            player.Energy -= question.Energy;
+            var round = gameRoom.Round.Round;
+            if (round == 1 || round == 2)
+            {
+                if (question.Difficulty != "easy" || roundPlayData.GetCardCount() >= 1)
+                    return null;
+            }
+            else if (round == 3 || round == 4)
+            {
+                if (question.Difficulty == "hard" || roundPlayData.GetCardCount() >= 2) return null;
+            }
+            else if (round == 5 || round == 6)
+            {
+                if (roundPlayData.GetCardCount() >= 2) return null;
+            }
 
             var dto = await _questionManager.GetQuestionDto(playerCard.QuestionId);
             return new OpenQuestionResponse
             {
-                Question = dto,
-                Energy = player.Energy
+                Question = dto
             };
         }
 
         public async ValueTask EndTurn()
         {
-
-            gameRoom.Round.PlayedPlayerGuids.Add(ConnectionId);
-            if (gameRoom.Round.PlayedPlayerGuids.Count == 2 || gameRoom.SinglePlayer)
+            var roundPlayData = gameRoom.Round.RoundPlayData[player.UserId];
+            roundPlayData.TurnEnded = true;
+            if (gameRoom.Round.CheckTurnsEnded() || gameRoom.SinglePlayer)
             {
                 await NextTurn();
             }
+
         }
 
         private async Task NextTurn()
@@ -124,7 +139,7 @@ namespace Api.Hubs
             }
 
             player.Deck.Cards.Remove(playerCard);
-            BroadcastExceptSelf(room).OnEnemyMove(new EnemyCardMove { Energy = question.Energy, LaneNumber = lane, Succeed = response.Succeed ? true : null });
+            BroadcastExceptSelf(room).OnEnemyMove(new EnemyCardMove { Energy = question.Energy, LaneNumber = lane, Succeed = response.Succeed });
 
             return response;
         }

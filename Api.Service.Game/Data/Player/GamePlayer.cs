@@ -2,9 +2,8 @@
 {
     public class GamePlayer
     {
-        public string Name { get; set; }
+        public string UserId { get; set; }
         public Deck Deck { get; set; }
         public Guid ConnectionId { get; set; }
-        public int Energy { get; set; }
     }
 }

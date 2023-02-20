@@ -1,4 +1,4 @@
-﻿using Api.Service.GameHub.Data;
+﻿using Api.Service.GameHub.Data.Game;
 using Api.Service.GameHub.Data.Player;
 using Api.Service.GameHub.PlayerManagement;
 

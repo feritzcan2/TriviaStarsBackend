@@ -1,6 +1,7 @@
 ﻿using Api.Service.GameHub.Data.Player;
+using Api.Service.GameHub.Data.Room;
 
-namespace Api.Service.GameHub.Data
+namespace Api.Service.GameHub.Data.Game
 {
     public class GameRoom
     {
@@ -18,22 +19,10 @@ namespace Api.Service.GameHub.Data
 
         public void AddPlayer(GamePlayer gamePlayer)
         {
+            Round.RoundPlayData.Add(gamePlayer.UserId, new PlayerRoundPlayData());
             Players.Add(gamePlayer);
         }
     }
 
-    public class GameRoundInfo
-    {
-        public DateTime? RoundStartDate { get; set; }
-        public int Round { get; set; }
 
-        public HashSet<Guid> PlayedPlayerGuids { get; set; } = new HashSet<Guid>();
-
-        public void SetNewRound()
-        {
-            PlayedPlayerGuids.Clear();
-            Round++;
-            RoundStartDate = DateTime.UtcNow;
-        }
-    }
 }

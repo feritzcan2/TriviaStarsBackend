@@ -18,9 +18,8 @@ namespace Api.Service.GameHub.PlayerManagement
             return new GamePlayer
             {
                 ConnectionId = connectionId,
-                Name = name,
-                Deck = deck,
-                Energy = 7
+                UserId = name,
+                Deck = deck
             };
 
         }

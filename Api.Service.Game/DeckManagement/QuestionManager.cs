@@ -18,7 +18,7 @@ namespace Api.Service.GameHub.DeckManagement
             var randEasy = questions.Where(x => x.Difficulty == "easy").OrderBy(arg => Guid.NewGuid()).Take(2).ToList();
             var randHard = questions.Where(x => x.Difficulty == "hard").OrderBy(arg => Guid.NewGuid()).Take(1).ToList();
             var randMediom = questions.Where(x => x.Difficulty == "medium").OrderBy(arg => Guid.NewGuid()).Take(2).ToList();
-            return randMediom.Concat(randEasy).Concat(randHard).ToList();
+            return randEasy.Concat(randMediom).Concat(randHard).ToList();
         }
 
         public async Task<List<QuestionDetail>> GetRandomCards(int count)

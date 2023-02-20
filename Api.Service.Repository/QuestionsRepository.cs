@@ -75,9 +75,10 @@ namespace Api.Service.Repository
             foreach (var quest in questions)
             {
                 quest.Id = Guid.NewGuid().ToString();
+
                 quest.Energy = quest.difficulty == "hard"
-                    ? Random.Shared.Next(6, 9)
-                    : (quest.difficulty == "medium" ? Random.Shared.Next(4, 6) : Random.Shared.Next(1, 3));
+                    ? 3
+                    : (quest.difficulty == "medium" ? 2 : 1);
             }
 
 #if DEBUG
