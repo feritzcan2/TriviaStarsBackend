@@ -30,21 +30,14 @@
     public class PlayerRoundPlayData
     {
         public bool TurnEnded { get; set; }
-        public int NumberOfEasyCards { get; set; }
-        public int NumberOfMediumCards { get; set; }
-        public int NumberOfHardCards { get; set; }
+        public int PlayedCardCount { get; set; }
 
         public void Reset()
         {
-            NumberOfEasyCards = 0;
+            PlayedCardCount = 0;
             TurnEnded = false;
-            NumberOfMediumCards = 0;
-            NumberOfHardCards = 0;
         }
 
-        public int GetCardCount()
-        {
-            return NumberOfEasyCards + NumberOfHardCards + NumberOfMediumCards;
-        }
+
     }
 }

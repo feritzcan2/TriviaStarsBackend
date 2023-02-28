@@ -23,7 +23,6 @@ namespace Api.Hubs
 
         public GamingHub(GameRoomManager roomManager, DeckManager deckManager, QuestionManager questionManager)
         {
-
             _questionManager = questionManager;
             _deckManager = deckManager;
             _roomManager = roomManager;
@@ -42,8 +41,11 @@ namespace Api.Hubs
             try
             {
                 Console.WriteLine("Join asynccc");
-                (gameRoom, player) = await _roomManager.EnterRoom(roomName, userName, ConnectionId, singlePlayer);
                 (room, storage) = await Group.AddAsync(roomName, player);
+
+                var broadCaster = room.CreateBroadcasterTo<IGamingHubReceiver>(ConnectionId);
+
+                (gameRoom, player) = await _roomManager.EnterRoom(roomName, userName, ConnectionId, singlePlayer, broadCaster);
 
                 if (gameRoom.Players.Count == 2 || (gameRoom.Players.Count == 1 && singlePlayer))
                 {
@@ -80,22 +82,18 @@ namespace Api.Hubs
 
             var playerCard = player.Deck.Cards.FirstOrDefault(x => x.Id == id);
             if (playerCard == null) return null;
-            var question = await _questionManager.GetQuestion(playerCard.QuestionId);
             var round = gameRoom.Round.Round;
             if (round == 1 || round == 2)
             {
-                if (question.Difficulty != "easy" || roundPlayData.GetCardCount() >= 1)
+                if (roundPlayData.PlayedCardCount >= 1)
                     return null;
             }
-            else if (round == 3 || round == 4)
+            else
             {
-                if (question.Difficulty == "hard" || roundPlayData.GetCardCount() >= 2) return null;
-            }
-            else if (round == 5 || round == 6)
-            {
-                if (roundPlayData.GetCardCount() >= 2) return null;
+                if (roundPlayData.PlayedCardCount >= 2) return null;
             }
 
+            roundPlayData.PlayedCardCount++;
             var dto = await _questionManager.GetQuestionDto(playerCard.QuestionId);
             return new OpenQuestionResponse
             {
@@ -107,25 +105,9 @@ namespace Api.Hubs
         {
             var roundPlayData = gameRoom.Round.RoundPlayData[player.UserId];
             roundPlayData.TurnEnded = true;
-            if (gameRoom.Round.CheckTurnsEnded() || gameRoom.SinglePlayer)
-            {
-                await NextTurn();
-            }
-
         }
 
-        private async Task NextTurn()
-        {
-            var response = new NextTurnResponse();
-            gameRoom.Round.SetNewRound();
-            response.Round = gameRoom.Round.Round;
-            foreach (var player in gameRoom.Players)
-            {
-                var cards = await _deckManager.FillCards(player);
-                response.Cards = cards;
-                BroadcastTo(room, player.ConnectionId).OnNextRound(response);
-            }
-        }
+
 
         public async ValueTask<QuestionAnsweredResponse> AnswerQuestion(string cardId, string answer, int lane)
         {

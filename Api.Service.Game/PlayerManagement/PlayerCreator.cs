@@ -1,5 +1,6 @@
 ﻿using Api.Service.GameHub.Data.Player;
 using Api.Service.GameHub.DeckManagement;
+using GameEngine.Entities.Hubs.Receiver;
 
 namespace Api.Service.GameHub.PlayerManagement
 {
@@ -11,12 +12,14 @@ namespace Api.Service.GameHub.PlayerManagement
         {
             _deckManager = deckManager;
         }
-        public async Task<GamePlayer> CreateStartingPlayer(string name, Guid connectionId)
+        public async Task<GamePlayer> CreateStartingPlayer(string name, Guid connectionId,
+            IGamingHubReceiver gamingHubReceiver)
         {
             var deck = await _deckManager.GenerateStartingDeck();
 
             return new GamePlayer
             {
+                Broadcaster = gamingHubReceiver,
                 ConnectionId = connectionId,
                 UserId = name,
                 Deck = deck
