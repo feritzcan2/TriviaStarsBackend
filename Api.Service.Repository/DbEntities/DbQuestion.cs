@@ -1,10 +1,9 @@
 
 namespace Api.Service.Repository.DbEntities
 {
-    [BsonCollection("QuestionsInReview")]
-    public class DbQuestionInReview : BaseEntity
+    [BsonCollection("Questions")]
+    public class DbQuestion : BaseEntity
     {
-        public ReviewStatus Status { get; set; }
         public string Category { get; set; }
         public string Type { get; set; }
         public string Difficulty { get; set; }
@@ -12,12 +11,5 @@ namespace Api.Service.Repository.DbEntities
         public string CorrectAnswer { get; set; }
         public List<string> IncorrectAnswers { get; set; }
         public long CatagoryId { get; set; }
-    }
-
-    public enum ReviewStatus
-    {
-        Waiting,
-        Selected,
-        Unselected,
     }
 }

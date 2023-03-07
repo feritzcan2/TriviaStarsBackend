@@ -1,5 +1,6 @@
 using Api.Service;
 using Api.Service.Data.OpenTriviaDb;
+using Api.Service.Data.Request;
 using MagicOnion;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,9 +27,17 @@ namespace Api.Controllers
 
         [HttpGet]
         [Route("questions")]
-        public async Task<IReadOnlyList<Service.Repository.DbEntities.DbQuestionInReview>> GetCatagories(int page,int pageSize)
+        public async Task<IReadOnlyList<Service.Repository.DbEntities.DbQuestionInReview>> GetCatagories(int page,int pageSize,int catagory)
         {
-            return await _service.QueryByPage(page,pageSize);
+            return await _service.QueryByPage(page,pageSize,catagory);
+        }
+        
+        [HttpPost]
+        [Route("updateQuestion")]
+        public async Task<bool> GetCatagories([FromBody] UpdateQuestionRequest request)
+        {
+             await _service.SaveQuestion(request);
+             return true;
         }
     }
 }

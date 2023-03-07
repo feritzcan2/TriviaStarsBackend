@@ -18,6 +18,7 @@ public static class MongoDbServiceExtensions
         var connectionString = context.Configuration.GetValue<string>("MongoDbConfiguration:ConnectionString");
         services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
         services.AddSingleton<QuestionsInReviewRepository>();
+        services.AddSingleton<DbQuestionsRepository>();
 
 
     }

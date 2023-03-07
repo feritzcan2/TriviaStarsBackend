@@ -8,6 +8,7 @@ namespace Api.Service.Data.OpenTriviaDb
 {
     public class OpenTriviaDbQuestionResp
     {
+        public long catagoryId;
         public string category { get; set; }
         public string type { get; set; }
         public string difficulty { get; set; }

@@ -4,6 +4,7 @@ using Api.Service.Repository.DbEntities;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Net.Http;
+using Api.Service.Data.Request;
 using static System.Net.WebRequestMethods;
 
 namespace Api.Service
@@ -13,11 +14,15 @@ namespace Api.Service
         private IMemoryCache _cache;
         private IHttpClientFactory _httpClient;
         private QuestionsInReviewRepository _questionsInReviewRepository;
+        private readonly DbQuestionsRepository _questionsRepository;
 
-        public OpenTriviaDbService(IHttpClientFactory httpClient,IMemoryCache cache, QuestionsInReviewRepository questionsInReviewRepository)
+        public OpenTriviaDbService(IHttpClientFactory httpClient,
+            IMemoryCache cache, QuestionsInReviewRepository questionsInReviewRepository
+            , DbQuestionsRepository questionsRepository)
         {
             _cache = cache;
             _httpClient = httpClient;
+            _questionsRepository = questionsRepository;
             _questionsInReviewRepository = questionsInReviewRepository;
         }
 
@@ -38,6 +43,10 @@ namespace Api.Service
                     var result = JsonConvert.DeserializeObject<OpenTriviaQuestionsResponse>(strContent);
                     if (result != null)
                     {
+                        foreach (var question in result.results)
+                        {
+                            question.catagoryId = catagory.Id;
+                        }
                         questions.AddRange(result.results);
                     }
                     await Task.Delay(random.Next(5000, 40000));
@@ -49,6 +58,7 @@ namespace Api.Service
             {
                 var db = questions.Select(x => new DbQuestionInReview
                 {
+                    CatagoryId = x.catagoryId,
                     Category = x.category,
                     CorrectAnswer = x.correct_answer,
                     Difficulty = x.difficulty,
@@ -59,7 +69,6 @@ namespace Api.Service
                 }).ToList();
                 await _questionsInReviewRepository.InsertManyAsync(db);
             }
-            
         }
 
         public async Task<TriviaCategory[]> GetCatagories()
@@ -78,9 +87,30 @@ namespace Api.Service
             }
             throw new Exception("Catagories cannot be found ");
         }
-        public async Task<IReadOnlyList<DbQuestionInReview>> QueryByPage(int page, int pageSize)
+        public async Task<IReadOnlyList<DbQuestionInReview>> QueryByPage(int page, int pageSize,int catagory)
         {
-            return await _questionsInReviewRepository.QueryByPage(page, pageSize);
+            return await _questionsInReviewRepository.QueryByPage(page, pageSize,catagory);
+        }
+
+        public async Task SaveQuestion(UpdateQuestionRequest request)
+        {
+             await _questionsInReviewRepository.SetProcessed(request.Question,request.Accepted);
+             if (request.Accepted)
+             {
+                 var question = new DbQuestion
+                 {
+                     CatagoryId = request.Question.CatagoryId,
+                     Category = request.Question.Category.Contains("Entertainment")
+                         ? "Entertainment"
+                         : request.Question.Category,
+                     Difficulty = request.Question.Difficulty,
+                     Question = request.Question.Question,
+                     Type = request.Question.Type,
+                     CorrectAnswer = request.Question.CorrectAnswer,
+                     IncorrectAnswers = request.Question.IncorrectAnswers,
+                 };
+                 await _questionsRepository.InsertAsync(question);
+             }
         }
     }
 

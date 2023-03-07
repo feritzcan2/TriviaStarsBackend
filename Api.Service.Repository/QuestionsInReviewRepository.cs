@@ -56,7 +56,7 @@ public class QuestionsInReviewRepository : RepositoryBase<DbQuestionInReview>
         }
         return _cache;
     }
-    public  async Task<IReadOnlyList<DbQuestionInReview>> QueryByPage(int page, int pageSize)
+    public  async Task<IReadOnlyList<DbQuestionInReview>> QueryByPage(int page, int pageSize,int catagory)
     {
         var countFacet = AggregateFacet.Create("count",
         PipelineDefinition<DbQuestionInReview, AggregateCountResult>.Create(new[]
@@ -72,7 +72,8 @@ public class QuestionsInReviewRepository : RepositoryBase<DbQuestionInReview>
             PipelineStageDefinitionBuilder.Limit<DbQuestionInReview>(pageSize),
             }));
 
-        var filter = Builders<DbQuestionInReview>.Filter.Eq(x=>x.Status , ReviewStatus.Waiting);
+        var filter = Builders<DbQuestionInReview>.Filter.Eq(x=>x.Status , ReviewStatus.Waiting)
+            &Builders<DbQuestionInReview>.Filter.Eq(x=>x.CatagoryId , catagory);
         var aggregation = await Collection.Aggregate()
             .Match(filter)
             .Facet(countFacet, dataFacet)
@@ -91,5 +92,13 @@ public class QuestionsInReviewRepository : RepositoryBase<DbQuestionInReview>
             .Output<DbQuestionInReview>();
 
         return data;
+    }
+
+    public async Task SetProcessed(DbQuestionInReview question,bool selected)
+    {
+        var status = selected ? ReviewStatus.Selected : ReviewStatus.Unselected;
+        var filter = Builders<DbQuestionInReview>.Filter.Eq(s => s.Id, question.Id);
+        var update = Builders<DbQuestionInReview>.Update.Set(s => s.Status,status);
+        var result = await Collection.UpdateOneAsync(filter, update);
     }
 }
