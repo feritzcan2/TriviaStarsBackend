@@ -12,6 +12,7 @@
     <PackageReference Include="MagicOnion" Version="5.1.2" />
     <PackageReference Include="MagicOnion.Abstractions" Version="5.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
     <ProjectReference Include="..\..\TriviaStarsClient\Assets\0_TriviaStars\Scripts\Shared\GameEngine.Entities\GameEngine.Entities.csproj" />
     <ProjectReference Include="..\Api.Service.Game\Api.Service.GameHub.csproj" />
     <ProjectReference Include="..\Api.Service.Repository\Api.Service.Repository.csproj" />
+    <ProjectReference Include="..\Api.Service\Api.Service.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Service.GameHub", "Api.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameEngine.Entities", "..\TriviaStarsClient\Assets\0_TriviaStars\Scripts\Shared\GameEngine.Entities\GameEngine.Entities.csproj", "{02AF66DC-169A-4E7A-A130-189CD6F4DFA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Service.Repository", "Api.Service.Repository\Api.Service.Repository.csproj", "{DD91A604-66BF-4342-8CBF-DD009197504A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Service.Repository", "Api.Service.Repository\Api.Service.Repository.csproj", "{DD91A604-66BF-4342-8CBF-DD009197504A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Service", "Api.Service\Api.Service.csproj", "{46FDFEF9-5FCA-4674-B7F2-2F3B130D417E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DD91A604-66BF-4342-8CBF-DD009197504A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD91A604-66BF-4342-8CBF-DD009197504A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD91A604-66BF-4342-8CBF-DD009197504A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46FDFEF9-5FCA-4674-B7F2-2F3B130D417E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FDFEF9-5FCA-4674-B7F2-2F3B130D417E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FDFEF9-5FCA-4674-B7F2-2F3B130D417E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FDFEF9-5FCA-4674-B7F2-2F3B130D417E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

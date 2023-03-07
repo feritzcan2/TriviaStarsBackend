@@ -1,6 +1,8 @@
 using Api.MagicOnion;
+using Api.Service;
 using Api.Service.GameHub.Utils;
 using Api.ServiceExtensions;
+using MagicOnion;
 using MessagePack.Resolvers;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -19,8 +21,23 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenAnyIP(5000, o => o.Protocols =
         HttpProtocols.Http1);
 });
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddSingleton<OpenTriviaDbService>();
+builder.AddMongoDb(builder.Services);
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddGameEngine();
 builder.Services.AddRepositories();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,6 +57,7 @@ builder.Services.AddMagicOnion((options) =>
 
 
 var app = builder.Build();
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

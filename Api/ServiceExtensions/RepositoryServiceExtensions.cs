@@ -8,7 +8,8 @@ namespace Api.ServiceExtensions
     {
         public static void AddRepositories(this IServiceCollection services)
         {
-
+            
+            services.AddHostedService<OpenTriviaDbFetcherBackgroundService>();
             services.AddHostedService<GameRoundCheckerBackgroundService>();
             services.AddSingleton<IQuestionRepository, QuestionsRepository>();
         }
