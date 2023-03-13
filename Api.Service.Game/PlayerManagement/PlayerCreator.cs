@@ -12,15 +12,13 @@ namespace Api.Service.GameHub.PlayerManagement
         {
             _deckManager = deckManager;
         }
-        public async Task<GamePlayer> CreateStartingPlayer(string name, Guid connectionId,
-            IGamingHubReceiver gamingHubReceiver)
+        public async Task<GamePlayer> CreateStartingPlayer(string name, NetworkPlayer player)
         {
             var deck = await _deckManager.GenerateStartingDeck();
 
             return new GamePlayer
             {
-                Broadcaster = gamingHubReceiver,
-                ConnectionId = connectionId,
+                NetworkPlayer =player,
                 UserId = name,
                 Deck = deck
             };

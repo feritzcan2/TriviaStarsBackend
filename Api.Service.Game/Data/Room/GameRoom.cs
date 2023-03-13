@@ -17,9 +17,14 @@ namespace Api.Service.GameHub.Data.Game
         public IList<GamePlayer> Players { get; set; } = new List<GamePlayer>();
 
 
+        public GamePlayer GetPlayer(Guid connectionId)
+        {
+            return Players.First(x => x.NetworkPlayer.ConnectionId == connectionId);
+        }
+
         public void AddPlayer(GamePlayer gamePlayer)
         {
-            Round.RoundPlayData.Add(gamePlayer.UserId, new PlayerRoundPlayData());
+            Round.RoundPlayData.Add(gamePlayer.NetworkPlayer.ConnectionId, new PlayerRoundPlayData());
             Players.Add(gamePlayer);
         }
     }

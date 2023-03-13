@@ -6,7 +6,7 @@ namespace Api.Service.GameHub.Data.Player
     {
         public string UserId { get; set; }
         public Deck Deck { get; set; }
-        public Guid ConnectionId { get; set; }
-        public IGamingHubReceiver Broadcaster { get; set; }
+        
+        public NetworkPlayer NetworkPlayer { get; set; }
     }
 }

@@ -75,3 +75,5 @@ BundleArtifacts/
 !*.[Cc]ache/
 TycoonBackend/Generated/GameEngine/mpc_generated.cs
 TycoonBackend/Generated/CommonEntities/mpc_generated.cs
+
+.fake

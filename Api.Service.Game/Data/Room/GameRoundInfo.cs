@@ -5,7 +5,7 @@
         public DateTime? RoundStartDate { get; set; }
         public int Round { get; set; }
 
-        public Dictionary<string, PlayerRoundPlayData> RoundPlayData { get; set; } = new Dictionary<string, PlayerRoundPlayData>();
+        public Dictionary<Guid, PlayerRoundPlayData> RoundPlayData { get; set; } = new Dictionary<Guid, PlayerRoundPlayData>();
 
         public bool CheckTurnsEnded()
         {

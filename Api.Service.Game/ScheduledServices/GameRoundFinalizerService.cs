@@ -28,6 +28,7 @@ namespace Api.Service.GameHub.ScheduledServices
                 }
             }
         }
+        
         private async Task NextTurn(GameRoom gameRoom)
         {
             var response = new NextTurnResponse();
@@ -37,7 +38,7 @@ namespace Api.Service.GameHub.ScheduledServices
             {
                 var cards = await _deckManager.FillCards(player);
                 response.Cards = cards;
-                player.Broadcaster.OnNextRound(response);
+                player.NetworkPlayer.Broadcaster.OnNextRound(response);
             }
         }
 
